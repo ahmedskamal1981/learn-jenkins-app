@@ -1,9 +1,12 @@
 pipeline {
     agent any
 
+    environment {
+        JEST_JUNIT_OUTPUT = 'jest-results/junit.xml'
+    }
+
     stages {
         /*
-
         stage('Build') {
             agent {
                 docker {
@@ -31,10 +34,10 @@ pipeline {
                     reuseNode true
                 }
             }
-
             steps {
                 sh '''
-                    #test -f build/index.html
+                    mkdir -p jest-results
+                    npm install
                     npm test
                 '''
             }
@@ -47,7 +50,6 @@ pipeline {
                     reuseNode true
                 }
             }
-
             steps {
                 sh '''
                     npm install serve
