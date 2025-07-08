@@ -28,17 +28,10 @@ pipeline {
                     reuseNode true
                 }
             }
+
             steps {
                 sh '''
-                    echo "Checking if build/index.html exists..."
-                    if [ -f build/index.html ]; then
-                        echo "✅ index.html exists."
-                    else
-                        echo "❌ index.html not found!"
-                        exit 1
-                    fi
-
-                    echo "Running unit tests..."
+                    test -f build/index.html
                     npm test
                 '''
             }
