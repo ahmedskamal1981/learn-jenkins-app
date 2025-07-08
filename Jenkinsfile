@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        NETLIFY_SITE_ID = '03d4042d-476c-4668-9ce8-34352dad73e4'
+    }
+
     stages {
 
         stage('Build') {
@@ -15,6 +19,7 @@ pipeline {
                     ls -la
                     node --version
                     npm --version
+                    npm ci
                     npm run build
                     ls -la
                 '''
@@ -33,15 +38,8 @@ pipeline {
 
                     steps {
                         sh '''
-                            # Ensure directory exists and is writable
-                            mkdir -p jest-results
-                            chmod -R 777 jest-results
-
-                            # Ensure jest-junit is installed
-                            npm install --save-dev jest-junit
-
-                            # Run tests with proper reporter
-                            npx jest --testResultsProcessor=jest-junit --ci
+                            #test -f build/index.html
+                            npm test
                         '''
                     }
                     post {
@@ -51,7 +49,7 @@ pipeline {
                     }
                 }
 
-               stage('E2E') {
+                stage('E2E') {
                     agent {
                         docker {
                             image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
@@ -64,7 +62,7 @@ pipeline {
                             npm install serve
                             node_modules/.bin/serve -s build &
                             sleep 10
-                            npx playwright test --reporter=html
+                            npx playwright test  --reporter=html
                         '''
                     }
 
@@ -88,6 +86,7 @@ pipeline {
                 sh '''
                     npm install netlify-cli
                     node_modules/.bin/netlify --version
+                    echo "Deploying to production. Site ID: $NETLIFY_SITE_ID"
                 '''
             }
         }
