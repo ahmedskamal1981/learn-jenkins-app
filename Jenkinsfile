@@ -1,12 +1,9 @@
 pipeline {
     agent any
 
-    environment {
-        JEST_JUNIT_OUTPUT = 'jest-results/junit.xml'
-    }
-
     stages {
         /*
+
         stage('Build') {
             agent {
                 docker {
@@ -34,10 +31,10 @@ pipeline {
                     reuseNode true
                 }
             }
+
             steps {
                 sh '''
-                    mkdir -p jest-results
-                    npm install
+                    #test -f build/index.html
                     npm test
                 '''
             }
@@ -47,9 +44,10 @@ pipeline {
             agent {
                 docker {
                     image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
-                    reuseNode true                   
+                    reuseNode true
                 }
             }
+
             steps {
                 sh '''
                     npm install serve
