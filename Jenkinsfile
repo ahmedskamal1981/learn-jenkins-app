@@ -2,16 +2,24 @@ pipeline {
     agent any
 
     stages {
-        stage('Greet') {
+        stage('Build') {
             steps {
-                echo 'Hello, World!'
+                echo 'Building a new laptop ...'
+                sh 'mkdir -p build'
+                sh 'touch build/computer.txt'
+                sh 'echo "Mainboard" >> build/computer.txt'
+                sh 'cat build/computer.txt'
+                sh 'echo "Display" >> build/computer.txt'
+                sh 'cat build/computer.txt'
+                sh 'echo "Keyboard" >> build/computer.txt'
+                sh 'cat build/computer.txt'
             }
         }
+    }
 
-        stage('Goodbye') {
-            steps {
-                echo 'Goodbye, World!'
-            }
+    post {
+        always {
+            cleanWs()
         }
     }
 }
