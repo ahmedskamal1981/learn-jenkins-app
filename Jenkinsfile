@@ -3,7 +3,6 @@ pipeline {
         docker {
             image 'node:18-alpine'
             reuseNode true
-            // Optionally you can add 'args' here if needed, e.g., to mount volumes
         }
     }
 
@@ -27,7 +26,11 @@ pipeline {
 
     post {
         always {
-            cleanWs()
+            script {
+                node {
+                    cleanWs()
+                }
+            }
         }
     }
 }
