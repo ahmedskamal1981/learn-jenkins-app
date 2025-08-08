@@ -1,9 +1,8 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:18-alpine'
-            reuseNode true
-        }
+    agent any
+
+    environment {
+        DOCKER_HOST = 'unix:///var/run/docker.sock'
     }
 
     stages {
@@ -11,14 +10,16 @@ pipeline {
             steps {
                 echo 'Building a new laptop ...'
                 sh '''
-                    mkdir -p build
-                    touch build/computer.txt
-                    echo "Mainboard" >> build/computer.txt
-                    cat build/computer.txt
-                    echo "Display" >> build/computer.txt
-                    cat build/computer.txt
-                    echo "Keyboard" >> build/computer.txt
-                    cat build/computer.txt
+                    docker run --rm -v "$PWD:/workspace" -w /workspace node:18-alpine sh -c '
+                        mkdir -p build
+                        touch build/computer.txt
+                        echo "Mainboard" >> build/computer.txt
+                        cat build/computer.txt
+                        echo "Display" >> build/computer.txt
+                        cat build/computer.txt
+                        echo "Keyboard" >> build/computer.txt
+                        cat build/computer.txt
+                    '
                 '''
             }
         }
@@ -26,11 +27,7 @@ pipeline {
 
     post {
         always {
-            script {
-                node {
-                    cleanWs()
-                }
-            }
+            cleanWs()
         }
     }
 }
